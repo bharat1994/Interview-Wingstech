@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "313721546961",
+    "firebase_url": "https://interview-task-wingstech.firebaseio.com",
+    "project_id": "interview-task-wingstech",
+    "storage_bucket": "interview-task-wingstech.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313721546961:android:b34e4d98719f00dcae3df0",
+        "android_client_info": {
+          "package_name": "com.interviewtaskwingstech"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "313721546961-0aek2i9fsfnip0mkgs006pv73lf054uo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwG9_H7cWMH6Dkem3GdZNljNZgUOwxzxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313721546961-0aek2i9fsfnip0mkgs006pv73lf054uo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
