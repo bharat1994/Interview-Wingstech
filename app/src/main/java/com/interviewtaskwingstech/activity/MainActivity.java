@@ -1,11 +1,5 @@
 package com.interviewtaskwingstech.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,16 +15,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.interviewtaskwingstech.MyApp;
 import com.interviewtaskwingstech.R;
+import com.interviewtaskwingstech.base.BaseActivity;
 import com.interviewtaskwingstech.common.EndlessRecyclerViewScrollListener;
 import com.interviewtaskwingstech.model.Customer;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +33,6 @@ import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
@@ -46,14 +40,13 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @BindView(R.id.rvCustomerList) RecyclerView rvCustomerList;
     @BindView(R.id.txtAppName) TextView txtAppName;
     @BindView(R.id.txtFollowUser) TextView txtFollowUser;
     @BindView(R.id.etSearch) EditText etSearch;
 
-    private MyApp myApp = MyApp.getInstance();
     List<Customer> customerList = new ArrayList<>();
     CustomerAdapter customerAdapter;
     public OkHttpClient client = new OkHttpClient();
@@ -65,8 +58,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+        initViews();
 
-        fetchData(10);
+    }
+
+    @Override
+    protected void initViews() {
+        super.initViews();
+
+        if (myApp.getAppDatabase().customerDao().getAll().size() > 0){
+            customerList = myApp.getAppDatabase().customerDao().getAll();
+        }else {
+            fetchData(10);
+        }
+
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -85,10 +90,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
         manager = new LinearLayoutManager(MainActivity.this);
         rvCustomerList.setHasFixedSize(true);
         rvCustomerList.setLayoutManager(manager);
+        customerAdapter = new CustomerAdapter(MainActivity.this,customerList);
+        rvCustomerList.setAdapter(customerAdapter);
 
         scrollListener = new EndlessRecyclerViewScrollListener(manager) {
             @Override
@@ -127,21 +133,29 @@ public class MainActivity extends AppCompatActivity {
                     final GsonBuilder gsonBuilder = new GsonBuilder();
                     final Gson gson = gsonBuilder.create();
 
-                    Customer[] customer = gson.fromJson(responseStr,Customer[].class);
+                    Customer[] customer = gson.fromJson(responseStr, Customer[].class);
 
-                    myApp.getAppDatabase().customerDao().insertAll(customer);
+                    if (myApp.getAppDatabase().customerDao().getAll().size() > 0){
+                        if (!myApp.getAppDatabase().customerDao().getAll().contains(customer)){
+                            myApp.getAppDatabase().customerDao().insertAll(customer);
+                            customerList = myApp.getAppDatabase().customerDao().getAll();
+                        }
+                    }else {
+                        myApp.getAppDatabase().customerDao().insertAll(customer);
+                        customerList = myApp.getAppDatabase().customerDao().getAll();
+                    }
 
-                    customerList = myApp.getAppDatabase().customerDao().getAll();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             customerAdapter = new CustomerAdapter(MainActivity.this,customerList);
                             rvCustomerList.setAdapter(customerAdapter);
+                            customerAdapter.notifyDataSetChanged();
                         }
                     });
 
                 }else {
-
+                    Toast.makeText(MainActivity.this, "No Record Found !", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -187,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
             holder.civProfileImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(context,FullScreenActivity.class).putExtra("image_url",""+customer.avatar_url));
+                    startActivity(new Intent(context, FullScreenActivity.class).putExtra("image_url",""+customer.avatar_url));
                 }
             });
 

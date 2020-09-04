@@ -24,7 +24,7 @@ public class MyApp extends MultiDexApplication {
 
         ourInstance = this;
         appDatabase = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "test-database").build();
+                AppDatabase.class, "test-database").allowMainThreadQueries().build();
     }
 
 }

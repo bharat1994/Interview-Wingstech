@@ -18,11 +18,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.interviewtaskwingstech.R;
+import com.interviewtaskwingstech.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
 
     @BindView(R.id.tilName) TextInputLayout tilName;
     @BindView(R.id.tilEmail) TextInputLayout tilEmail;
@@ -44,8 +45,15 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         ButterKnife.bind(this);
-        mAuth = FirebaseAuth.getInstance();
+        initViews();
 
+    }
+
+    @Override
+    protected void initViews() {
+        super.initViews();
+
+        mAuth = FirebaseAuth.getInstance();
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +88,5 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 }

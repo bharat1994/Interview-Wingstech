@@ -20,11 +20,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.interviewtaskwingstech.R;
+import com.interviewtaskwingstech.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     @BindView(R.id.tilEmail) TextInputLayout tilEmail;
     @BindView(R.id.tilPassword) TextInputLayout tilPassword;
@@ -44,6 +45,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
+        initViews();
+    }
+
+    @Override
+    protected void initViews() {
+        super.initViews();
         mAuth = FirebaseAuth.getInstance();
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
